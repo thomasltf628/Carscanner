@@ -1,0 +1,47 @@
+/* Imageupload.css */
+
+/* Container styling */
+.image-upload-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  /* File input styling */
+  .custom-file-upload {
+    display: inline-block;
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: white;
+    color: white;
+    border-color: black;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 10px;
+  }
+  
+  /* Submit button styling */
+  .submit-button {
+    background-color: white;
+    color: black;
+    padding: 10px 20px;
+    border-color: black;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  /* Model name styling */
+  .model-name {
+    margin-top: 10px;
+    font-size: 18px;
+  }
+  
+  /* DataTable styling (you can customize based on your DataTable component) */
+  .data-table {
+    margin-top: 20px;
+  }
+  
+  /* Add any additional styling based on your design requirements */

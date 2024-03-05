@@ -1,0 +1,33 @@
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px;
+    border-radius: 8px; 
+    overflow: hidden; 
+  }
+  
+  th, td {
+    border: 2px solid #ddd;
+    padding: 12px;
+    text-align: left;
+  }
+  
+  thead {
+    background-color: #f2f2f2;
+  }
+  
+  th {
+    background-color: #7dd580;
+    color: white;
+    font-weight: bold;  /* Bold column headers */
+  }
+  
+  a {
+    text-decoration: none;
+    color: #3498db;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+    color: #2c3e50;
+  }
