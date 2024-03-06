@@ -3,21 +3,22 @@ import './hero.css';
 import welcome_icon from '../Assets/welcome.png';
 import arrow_icon from '../Assets/arrow.png';
 import ai_icon from '../Assets/ai.png'
+import {Link} from 'react-router-dom'
+
 export const hero = () => {
   return (
     <div className='hero'>
         <div className="hero-left">
-            <h2>Welcome To the SaveTheQueen</h2>
+            <h2>Looking for car</h2>
             <div>
                 <div className="overiewicon">
-                    <p>New</p>
-                    <img src={welcome_icon} alt="" />
+                    <p>Get</p>
                 </div>
-                <p>Price Prediction</p>
-                <p>FOR EVERYONE</p>
+                <p>Your</p>
+                <p>Best deal</p>
             </div>
             <div className="hero-latestbin">
-                <div>Predict</div>
+                <div><Link style={{textDecoration: 'none'}} to='result'>Find your car</Link></div>
                 <img src={arrow_icon} alt="" />
             </div>
         </div>

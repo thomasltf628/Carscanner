@@ -29,8 +29,9 @@ function Imageupload(){
 
     return(
       <div class = "image-upload-container">
+        <p>Upload a Car photo</p>
         <input class = 'custom-file-upload' type="file" name='file' onChange ={handleImage}/>
-        <p> </p>
+        
         <button class = 'submit-button' onClick= {handleApi}>Submit</button>
 
         {modelName && <h3 class = "model-name">It is a {modelName}</h3>}
