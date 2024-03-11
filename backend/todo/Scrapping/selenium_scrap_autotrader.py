@@ -48,7 +48,7 @@ driver.get(url)
 page_num = 2
 max_failures = 5
 failures = 0
-page_to_scrap = 50
+page_to_scrap = 100
 scrap_fail = 0
 website = 'autotrader'
 data ={

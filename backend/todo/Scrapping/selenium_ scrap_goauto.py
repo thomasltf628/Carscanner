@@ -31,7 +31,7 @@ PATH = "C:/Program Files (x86)/chromedriver.exe"
 chrome_options = webdriver.ChromeOptions()
 driver = webdriver.Chrome(options=chrome_options)
 
-locarion_of_searcher ="toronto"
+location_of_searcher ="toronto"
 driver.get("https://www.goauto.ca/vehicles?refinementList=%7B%22stock_type%22%3A%5B%22USED%22%5D%7D")
 page_num = 2
 max_failures = 5
@@ -54,31 +54,34 @@ data ={
 df = pd.DataFrame(data)
 
 try:
-    time.sleep(15)
-    button_element = driver.find_element(By.CLASS_NAME, 'button_root__ebVgz')
+    time.sleep(3)
+    """classes = "z-20.sticky.md\\:static.top-0.md\\:z-auto.bg-white.py-8.md\\:py-0.md\\:flex.gap-24.flex-col.md\\:flex-row.md\\:justify-between.md\\:items-center"
+    element = driver.find_element(By.CSS_SELECTOR, f".{classes}")
+    button_element = element.find_element(By.CLASS_NAME, "button_root__ebVgz.button_contextLight__2lZAC.button_text__NBAij.button_small__KgoXT.typ-button-small.button_widthAuto__PPtZs.button_primary__JpcLt")"""
+    xpath = "//span[contains(@class, 'flex') and contains(@class, 'items-center') and contains(text(), 'Find your location')]"
+    span_element = driver.find_element(By.XPATH, xpath)
     print('found button')
-    time.sleep(3)
-    driver.execute_script("arguments[0].click();", button_element)
+    driver.execute_script("arguments[0].click();", span_element)
     print('clicked button')
-    time.sleep(3)
-    input_area = WebDriverWait(driver, timeout=3).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, '[placeholder="Search…"]'))
-            )
+    input_area = WebDriverWait(driver, timeout=10).until(
+    EC.visibility_of_element_located((By.CSS_SELECTOR, '[placeholder="Search…"]'))
+)
+            
     time.sleep(3)
     input_area.send_keys("")
     time.sleep(3)
     driver.execute_script("arguments[0].value = '';", input_area)
     time.sleep(3)
-    input_area.send_keys(locarion_of_searcher)
+    input_area.send_keys(location_of_searcher)
     time.sleep(2)
     print('entered toronto')
     time.sleep(3)
-    submit_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Set my location')]")
+    submit_button = driver.find_element(By.XPATH, "//span[contains(text(), 'Set my location')]")
     driver.execute_script("arguments[0].click();", submit_button)
     print('clicked')
 
-except:
-    print('location already settled')
+except Exception as e:
+    print(f'Error: {e}')
 
 while (page_num <= page_to_scrap):
     try:
