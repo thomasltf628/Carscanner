@@ -15,11 +15,11 @@ function Imageupload(){
     async function handleApi(){
       const formData = new FormData()
       formData.append('picture', picture)
-      await axios.post('http://localhost:8000/api/n_profiles/', formData).then((res) => {
+      await axios.post('http://18.224.79.111:8000/api/n_profiles/', formData).then((res) => {
         console.log(res.data) 
         const extractedModel = res.data.model_name;
         setModelName(res.data.make_name + " " + res.data.model_name)
-        return axios.get(`http://localhost:8000/api/cars/?model=${extractedModel}`);
+        return axios.get(`http://18.224.79.111:8000/api/cars/?model=${extractedModel}`);
       }).then(
         response => typeof response.data ==='string'? JSON.parse(response.data): response.data).then(data => { 
         setJsonData(data);

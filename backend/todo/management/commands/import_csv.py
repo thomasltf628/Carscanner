@@ -8,7 +8,7 @@ class Command(BaseCommand):
     help = 'Import data from CSV files into the database'
 
     def add_arguments(self, parser):
-        parser.add_argument('csv_files', nargs='+', type=str, help='C:\\Users\\super\\Capstone_project\\backend\\todo\\Scrapping\\result')
+        parser.add_argument('csv_files', nargs='+', type=str, help=r'C:\Users\Administrator\Desktop\Carscanner\backend\todo\Scrapping\result')
     
     def handle(self, *args, **options):
         csv_files = options['csv_files']
