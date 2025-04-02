@@ -1,3 +1,5 @@
+# Goal of scraping: Getting the latest information on the Carpage platform about used car on sales and then output to a csv file
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
@@ -19,6 +21,7 @@ for index, year in enumerate(years):
     year = str(year)
     years[index] = year
 
+# As the information of cars are grouped into a block like (Audi A3, 2014) , require regualar expression to break down distinct information into format ( Make: Audi, model: A3, year: 2014)
 def extract_car_info(car_info):
     
     make_pattern = re.compile(r'\b(?:' + '|'.join(make_list) +r')\b', flags=re.IGNORECASE)
@@ -35,6 +38,8 @@ def extract_car_info(car_info):
     year = year_match.group() if year_match else None
 
     return make, model, year
+
+# This website could take location by parameter in url
 province = "on"
 city = "toronto"
 url = f"https://www.carpages.ca/used-cars/search/?search_radius=100&province_code={province}&city={city}"
@@ -67,7 +72,7 @@ while (page_num <= page_to_scrap):
     try:
         text_box = WebDriverWait(driver, timeout=10).until(
                 EC.presence_of_element_located((By.CLASS_NAME, "main-container"))
-            )
+            ) # Wait for the main block to appear
         time.sleep(3)
         blocks = text_box.find_elements(By.CLASS_NAME, 't-flex.t-gap-6.t-items-start.t-p-6')
         for block in blocks:
@@ -80,14 +85,19 @@ while (page_num <= page_to_scrap):
                 print(make, model, year)
                 price = block.find_element(By.CLASS_NAME, 't-font-bold.t-text-xl')
                 price_todf = price.text
+                
+                # preprocessing of price scrapped
                 for char in '$,"':
                     price_todf = price_todf.replace(char, '')
                 try:
                     price_todf = int(price_todf)
                 except:
                     continue
+                
                 mileages = block.find_elements(By.CLASS_NAME, 'number')
                 mile = ''
+
+                # preprocessing of mile scrapped
                 for mileage in mileages:
                     mile += mileage.text
                 """for char in 'KM, "':
@@ -112,17 +122,21 @@ while (page_num <= page_to_scrap):
                 scrap_fail += 1
                 print (f'{scrap_fail} piece of information fails to be scrapped')
                 continue
-    
+
+        # Turn to next page by navigating to another url as page_num is include in url
         try:
             driver.get(f'https://www.carpages.ca/used-cars/search/?num_results=50&search_radius=100&province_code=on&city=toronto&ll=43.6547%2C-79.3623&p={page_num}')
             page_num += 1
             print(page_num)
             time.sleep(1)
+
+        # Termination of scraping if page cannot be reached (maybe last page reached already), save csv
         except NoSuchElementException:
             print('404 not found')
             df.to_csv(f'{website}.csv', index=False)
             driver.quit()    
             break
+    # Save current data we got as csv and quit in case any error could not be handled
     except Exception as e:
         print(f'Exception: {str(e)}')
         failures += 1
@@ -131,4 +145,6 @@ while (page_num <= page_to_scrap):
             print(f'Maximum failures ({max_failures}) reached. Exiting...')
             driver.quit()
             break
+            
+# Save current data as csv if all the above sucessfully run
 df.to_csv(f'{website}.csv', index=False)  
