@@ -1,6 +1,4 @@
-#loop over different make and model at a time interval
-#choose place
-#solve problem of 21 items by ListItemPage-0,1,2,3,4
+# Goal of Scraping: Getting latest information about the used cars sales on Kijijiautos platform
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -32,6 +30,7 @@ PATH = "C:/Program Files (x86)/chromedriver.exe"
 chrome_options = webdriver.ChromeOptions()
 driver = webdriver.Chrome(options=chrome_options)
 
+# Breaking down the block scraped containing make, model and year (e.g. Mazada Arata 2024) into formated (e.g. Make: Mazada, Model: Areta, year: 2024)
 def extract_car_info(car_info):
     
     make_pattern = re.compile(r'\b(?:' + '|'.join(make_list) +r')\b', flags=re.IGNORECASE)
@@ -73,6 +72,7 @@ data ={
 df = pd.DataFrame(data)
 
 try:
+    # Locate the button that induce the window for location choosing
     button_element = driver.find_element(By.CSS_SELECTOR, '[data-testid="LocationLabelLink"]')
     print('found button')
 
@@ -97,7 +97,7 @@ try:
     driver.execute_script("arguments[0].click();", submit_button)
     print('clicked')
 
-except:
+except: # Start scraping if location already settled
     print('location already settled')
 
 try:
@@ -107,7 +107,7 @@ try:
     time.sleep(3)
     for i in range(num_of_page_to_scrap):
         print(i)
-        page = driver.find_element(By.CSS_SELECTOR, f'[data-testid="ListItemPage-{i}"]')
+        page = driver.find_element(By.CSS_SELECTOR, f'[data-testid="ListItemPage-{i}"]') # The page don't have official "pages" but items are seperated into pages every 21 of them
         blocks = page.find_elements(By.TAG_NAME, 'article')
         for block in blocks:
             element_position = block.location['y']
@@ -115,27 +115,27 @@ try:
             try:
                 id_car = block.find_element(By.CSS_SELECTOR, '[data-testid="VehicleListItem"]').get_attribute('data-test-ad-id')
                 print(id_car)
-                link_to_buyer = f'https://www.kijijiautos.ca/vip/{id_car}'
+                link_to_buyer = f'https://www.kijijiautos.ca/vip/{id_car}' # Format of the link to buying the car
                 year_make_and_model =  block.find_element(By.TAG_NAME, 'h2')
                 make, model, year = extract_car_info(year_make_and_model.text)
                 print(make,model,year)
                 price = block.find_element(By.CLASS_NAME, 'mcN7dZ').find_element(By.CSS_SELECTOR, '[data-testid="searchResultItemPrice"]')
                 price_todf = price.text
-                for char in '$,"':
+                for char in '$,"': # Preprocessing of price scraped
                     price_todf = price_todf.replace(char, '')
                 try:
                     price_todf = int(price_todf)
                 except:
                     continue
                 mileage_location = block.find_element(By.CLASS_NAME, 'icN7dZ').find_elements(By.TAG_NAME, 'li')
-                for index, ele in enumerate (mileage_location):
-                    dummy = ele.find_element(By.TAG_NAME, 'span')
-                    if index == 0:
+                for index, ele in enumerate (mileage_location): # Breaking down the combined mileage_location element into list of tupled items
+                    dummy = ele.find_element(By.TAG_NAME, 'span')  # Asssign 'dummy' to the tuple containing mileage and location
+                    if index == 0: # The first item in tuple is mileage
                         mileage = dummy.text
-                        for char in 'km, "':
+                        for char in 'km, "': # Preprocessing of mileage scraped
                             mileage = mileage.replace(char, '')
                         print(mileage)
-                    elif index == 1:
+                    elif index == 1: # The second item in tuple is location
                         location = dummy.text
                         print(location)
                     else:
@@ -158,12 +158,14 @@ try:
                 continue
             time.sleep(1)
         time.sleep(2)
-        print('next page')
+        print('next page') # The page don't have official "pages" but items are seperated into pages every 21 of them
 except Exception as e:
     print(f'Exception: {str(e)}')
     failures += 1
+    # Quit and save current data to csv file upon unhandled error
     if failures >= max_failures:
         df.to_csv(f'{website}.csv', index=False)
         print(f'Maximum failures ({max_failures}) reached. Exiting...')
         driver.quit()
+# Save data to csv upon sucessful
 df.to_csv(f'{website}.csv', index=False)  
