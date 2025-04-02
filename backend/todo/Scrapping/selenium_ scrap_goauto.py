@@ -1,4 +1,5 @@
-# yet finish: set location
+# Goal of Scraping: Getting the latest information about the used car for sales oN Goauto  and then output a csv file
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
@@ -53,11 +54,14 @@ data ={
     }
 df = pd.DataFrame(data)
 
+# Input the information to the pop up window asking for location
 try:
     time.sleep(3)
+    
     """classes = "z-20.sticky.md\\:static.top-0.md\\:z-auto.bg-white.py-8.md\\:py-0.md\\:flex.gap-24.flex-col.md\\:flex-row.md\\:justify-between.md\\:items-center"
     element = driver.find_element(By.CSS_SELECTOR, f".{classes}")
     button_element = element.find_element(By.CLASS_NAME, "button_root__ebVgz.button_contextLight__2lZAC.button_text__NBAij.button_small__KgoXT.typ-button-small.button_widthAuto__PPtZs.button_primary__JpcLt")"""
+    
     xpath = "//span[contains(@class, 'flex') and contains(@class, 'items-center') and contains(text(), 'Find your location')]"
     span_element = driver.find_element(By.XPATH, xpath)
     print('found button')
