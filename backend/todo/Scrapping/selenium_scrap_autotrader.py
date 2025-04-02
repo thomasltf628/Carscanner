@@ -1,3 +1,5 @@
+# Goal of scraping: Getting the latest information of used car on sales and output to a csv file
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
@@ -19,6 +21,7 @@ for index, year in enumerate(years):
     year = str(year)
     years[index] = year
 
+# As the information of cars are grouped into a block like (Audi A3, 2014) , require regualar expression to break down distinct information into format ( Make: Audi, model: A3, year: 2014)
 def extract_car_info(car_info):
     
     make_pattern = re.compile(r'\b(?:' + '|'.join(make_list) +r')\b', flags=re.IGNORECASE)
@@ -35,6 +38,8 @@ def extract_car_info(car_info):
     year = year_match.group() if year_match else None
 
     return make, model, year
+
+# This website get location information by direct input of parameter in the url
 
 province = "on"
 city = "toronto"
